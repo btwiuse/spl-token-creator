@@ -3,7 +3,20 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 import { findMetadataPda } from '@metaplex-foundation/js';
+import { toast } from "react-toastify";
 
+const notify = (info: string) => {
+  toast.info(info, {
+    position: "top-center",
+    autoClose: 2000,
+    theme: "dark",
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+  });
+}
 
 export const GetMetadata: FC = () => {
   const { connection } = useConnection();
@@ -16,11 +29,19 @@ export const GetMetadata: FC = () => {
     async (form) => {
       const tokenMint = form.tokenAddress;
       const metadataPDA =  await findMetadataPda(new PublicKey(tokenMint));
-      console.log(metadataPDA.toBase58());
+      console.log('metadataPDA', metadataPDA.toBase58());
       const metadataAccount = await connection.getAccountInfo(metadataPDA);
-      console.log(metadataAccount);
+      console.log('metadataAccount', metadataAccount);
+      if (!metadataAccount) {
+        notify("Metadata account not found");
+        return
+      }
       const [metadata, _] = await Metadata.deserialize(metadataAccount.data);
-      console.log(metadata);
+      console.log('metadata', metadata);
+      if (!metadata) {
+        notify("Metadata not found");
+        return
+      }
       let logoRes = await fetch(metadata.data.uri);
       let logoJson = await logoRes.json();
       let { image } = logoJson;
