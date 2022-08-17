@@ -7,7 +7,7 @@ import {
 } from "@metaplex-foundation/mpl-token-metadata";
 import { findMetadataPda } from '@metaplex-foundation/js';
 
-export const UpgradeMetadata: FC = () => {
+export const AddMetadata: FC = () => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const [tokenMint, setTokenMint] = useState('')
@@ -89,7 +89,7 @@ export const UpgradeMetadata: FC = () => {
           })
         }
       >
-        <span>Upgrade Metadata</span>
+        <span>Add Metadata</span>
       </button>
     </div>
   );

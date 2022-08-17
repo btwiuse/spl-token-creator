@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { UpgradeView } from "../views";
+import { AddView } from "../views";
 
-const Upgrade: NextPage = (props) => {
+const Add: NextPage = (props) => {
   return (
     <div>
       <Head>
@@ -12,9 +12,9 @@ const Upgrade: NextPage = (props) => {
           content="Solana Scaffold"
         />
       </Head>
-      <UpgradeView />
+      <AddView />
     </div>
   );
 };
 
-export default Upgrade;
+export default Add;
