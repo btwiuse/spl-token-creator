@@ -1,8 +1,8 @@
-import { FC } from 'react';
-import Link from 'next/link';
+import { FC } from "react";
+import Link from "next/link";
 
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useAutoConnect } from '../contexts/AutoConnectProvider';
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useAutoConnect } from "../contexts/AutoConnectProvider";
 
 export const AppBar: FC = (props) => {
   const { autoConnect, setAutoConnect } = useAutoConnect();

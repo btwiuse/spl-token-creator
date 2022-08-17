@@ -1,55 +1,52 @@
-import { FC, useCallback, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Transaction, PublicKey } from '@solana/web3.js';
+import { FC, useCallback, useState } from "react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import {
-  DataV2,
   createCreateMetadataAccountV2Instruction,
+  DataV2,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { findMetadataPda } from '@metaplex-foundation/js';
+import { findMetadataPda } from "@metaplex-foundation/js";
 
 export const AddMetadata: FC = () => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
-  const [tokenMint, setTokenMint] = useState('')
-  const [tokenName, setTokenName] = useState('')
-  const [symbol, setSymbol] = useState('')
-  const [metadata, setMetadata] = useState('')
-
+  const [tokenMint, setTokenMint] = useState("");
+  const [tokenName, setTokenName] = useState("");
+  const [symbol, setSymbol] = useState("");
+  const [metadata, setMetadata] = useState("");
 
   const onClick = useCallback(async (form) => {
-      const mint = new PublicKey(form.tokenMint)
-    console.log(mint.toString())
-    console.log(form.tokenMint)
-      const metadataPDA = await findMetadataPda(mint);
-      console.log('metadataPDA', metadataPDA.toString());
-      const tokenMetadata = {
-        name: form.tokenName, 
-        symbol: form.symbol,
-        uri: form.metadata,
-        sellerFeeBasisPoints: 0,
-        creators: null,
-        collection: null,
-        uses: null
-      } as DataV2;
-      console.log('tokenMetadata', tokenMetadata);
+    const mint = new PublicKey(form.tokenMint);
+    console.log(mint.toString());
+    console.log(form.tokenMint);
+    const metadataPDA = await findMetadataPda(mint);
+    console.log("metadataPDA", metadataPDA.toString());
+    const tokenMetadata = {
+      name: form.tokenName,
+      symbol: form.symbol,
+      uri: form.metadata,
+      sellerFeeBasisPoints: 0,
+      creators: null,
+      collection: null,
+      uses: null,
+    } as DataV2;
+    console.log("tokenMetadata", tokenMetadata);
 
-      const createMetadataTransaction = new Transaction().add(
-        createCreateMetadataAccountV2Instruction({
-            metadata: metadataPDA,
-            mint: mint,
-            mintAuthority: publicKey,
-            payer: publicKey,
-            updateAuthority: publicKey,
-          },
-          { createMetadataAccountArgsV2: 
-            { 
-              data: tokenMetadata, 
-              isMutable: true 
-            } 
-          }
-        )
-      );
-      await sendTransaction(createMetadataTransaction, connection);
+    const createMetadataTransaction = new Transaction().add(
+      createCreateMetadataAccountV2Instruction({
+        metadata: metadataPDA,
+        mint: mint,
+        mintAuthority: publicKey,
+        payer: publicKey,
+        updateAuthority: publicKey,
+      }, {
+        createMetadataAccountArgsV2: {
+          data: tokenMetadata,
+          isMutable: true,
+        },
+      }),
+    );
+    await sendTransaction(createMetadataTransaction, connection);
   }, [publicKey, connection, sendTransaction]);
 
   return (
@@ -85,12 +82,11 @@ export const AddMetadata: FC = () => {
             metadata: metadata,
             symbol: symbol,
             tokenName: tokenName,
-            tokenMint: tokenMint
-          })
-        }
+            tokenMint: tokenMint,
+          })}
       >
         <span>Add Metadata</span>
       </button>
     </div>
   );
-}
+};
