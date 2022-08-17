@@ -3,11 +3,11 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Transaction, PublicKey } from '@solana/web3.js';
 import {
   DataV2,
-  createUpdateMetadataAccountV2Instruction,
+  createCreateMetadataAccountV2Instruction,
 } from "@metaplex-foundation/mpl-token-metadata";
 import { findMetadataPda } from '@metaplex-foundation/js';
 
-export const UpdateMetadata: FC = () => {
+export const UpgradeMetadata: FC = () => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const [tokenMint, setTokenMint] = useState('')
@@ -33,23 +33,23 @@ export const UpdateMetadata: FC = () => {
       } as DataV2;
       console.log('tokenMetadata', tokenMetadata);
 
-      const updateMetadataTransaction = new Transaction().add(
-        createUpdateMetadataAccountV2Instruction(
-          {
+      const createMetadataTransaction = new Transaction().add(
+        createCreateMetadataAccountV2Instruction({
             metadata: metadataPDA,
+            mint: mint,
+            mintAuthority: publicKey,
+            payer: publicKey,
             updateAuthority: publicKey,
           },
-          {
-            updateMetadataAccountArgsV2: {
-              data: tokenMetadata,
-              updateAuthority: publicKey,
-              primarySaleHappened: true,
-              isMutable: true,
-            },
+          { createMetadataAccountArgsV2: 
+            { 
+              data: tokenMetadata, 
+              isMutable: true 
+            } 
           }
         )
       );
-      await sendTransaction(updateMetadataTransaction, connection);
+      await sendTransaction(createMetadataTransaction, connection);
   }, [publicKey, connection, sendTransaction]);
 
   return (
@@ -89,7 +89,7 @@ export const UpdateMetadata: FC = () => {
           })
         }
       >
-        <span>Update Metadata</span>
+        <span>Upgrade Metadata</span>
       </button>
     </div>
   );
